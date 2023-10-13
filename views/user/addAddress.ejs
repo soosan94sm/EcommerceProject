@@ -1,0 +1,57 @@
+
+  <%- include('../header')-%>
+<%- include('./partials/banner')-%>
+
+<div class="container mt-5 "style="margin-left:250px">
+    <main class="col-md-6 ms-sm-auto px-md-4 pt-15 ">
+        <h2 class="text-center">Address Management</h2>
+        <form action="" method="post" onsubmit="return validateForm();">
+            <div class="mb-3">
+                <p id="error-message" class="text-danger"></p>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name">
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="number" class="form-control" id="phone" name="phone" required>
+            </div>
+            <div class="mb-3">
+                <label for="houseNumber" class="form-label">House No.</label>
+                <input type="number" class="form-control" id="houseNumber" name="houseNumber" required>
+            </div>
+            <div class="mb-3">
+                <label for="pincode" class="form-label">Pincode</label>
+                <input type="number" class="form-control" id="pincode" name="pincode" required>
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <textarea class="form-control" id="address" rows="3" name="address" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="landmark" class="form-label">Landmark</label>
+                <input type="text" class="form-control" id="landmark" name="landmark">
+            </div>
+            <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <input type="text" class="form-control" id="city" name="city" required>
+            </div>
+            <div class="mb-3">
+                <label for="state" class="form-label">State</label>
+                <input type="text" class="form-control" id="state" name="state" required>
+            </div>
+            <div class="mb-3">
+                <label for="altPhone" class="form-label">Alternate Phone</label>
+                <input type="number" class="form-control" id="altPhone" name="altPhone">
+            </div>
+            <div class="mb-3 text-center">
+               
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+    </main>
+</div>
+
+<%- include('../footer')-%>
+ 

@@ -1,0 +1,251 @@
+<%- include('./header')-%>
+<%- include('./nav')-%>
+
+
+<% if (locals.message) { %>
+    <div class="alert alert-danger">
+        <strong><%= message %> </strong>
+    </div>
+<% } %>
+
+<!-- Rest of your HTML and form elements -->
+<div class="container mt-5">
+  <div class="row">
+      <div class="col-12">
+          <h2 class="mb-5 text-center" >ORDERS</h2>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-12">
+          <div class="table-responsive ">
+              <table class="table table-bordered table-hover table-striped mt-2 ">
+                  <thead class="thead-dark">
+                      <tr>
+                          
+              <th scope="col">OrderID</th>
+              <th scope="col">Client Name</th>
+
+              <th scope="col">Product Id</th>
+              <th scope="col">Payment Method</th>
+              <th scope="col">Order date</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+                      </tr>
+                  </thead>
+                  <tbody id="filteredResults">
+          <% if (locals.items) { %>
+              <% items.forEach(item => { %>
+                  <% item.orderItem.forEach(orderItem => { %>
+                      <tr class="word-wrap">
+                          <td class="word-wrap orderId"><%= item.orderId %></td>
+                          <td class="text-capitalize username"><a href="/admin/order/admindetails?id=<%= item.orderId %>"><%= item.user.name %></a> </td>
+                         
+                              
+                          <td class="text-left"> <%= orderItem.product_id %></td>
+                          <td><%= item.paymentMethod %></td>
+                          <td><%= item.purchaseDate.toLocaleDateString() %></td>
+                         
+                           
+                            </td>
+                            <td >
+                             
+                              
+        <select class="form-select" style="border-radius: 20px;" aria-label=".form-select-sm example" name="salesRe" id="orderr"onchange="conform()">
+          <option selected>Order status</option>
+          <option value="<%= item.orderConfirm %>" data-product-id="<%= orderItem.product_id %>" data-order-id="<%= item.orderId %>">order Confirm</option>
+  <option value="<%= item.orderCancelReason %>" data-product-id="<%= orderItem.product_id %>" data-order-id="<%= item.orderId %>">cancel confirm</option>
+  <option value="<%= item.orderReturnReason %>" data-product-id="<%= orderItem.product_id %>" data-order-id="<%= item.orderId %>">Return confirm</option>
+  
+       
+</select>
+      
+                            </td>
+                      </tr>
+                  <% }); %>
+              <% }); %>
+          <% } else { %> 
+                          <tr>
+                              <td colspan="6">No orders</td>
+                          </tr>
+                      <% } %>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+</div>
+    <div class="align-items-center">
+      <nav aria-label="Page navigation example" style="width: 30%; margin: auto;">
+        <p class="text-center">Page <%= currentPage %> of <%= totalPages %></p>
+        <ul class="pagination justify-content-center">
+            <% if (currentPage > 1) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                </li>
+            <% } %>
+            <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= totalPages %>">Last</a>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+    
+</div> 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script id="ord" type="application/json"><%- JSON.stringify(items) %></script>
+
+  
+<script>
+  let orderDetails = document.getElementById('ord')
+  console.log(orderDetails);
+  let orderss = JSON.parse(orderDetails.textContent)
+console.log("hi",orderss);
+
+function conform() {
+  // find order id 
+  // find orderid --> productid 
+  // p
+  var selectElement = document.getElementById("orderr");
+  var selectedOption = selectElement.options[selectElement.selectedIndex];
+  var orderId = selectedOption.getAttribute("data-order-id");
+  var productId = selectedOption.getAttribute("data-product-id");
+
+  // Do something with productId and orderId
+  console.log("Selected Product ID: " + productId);
+  console.log("Selected Order ID: " + orderId);
+
+  fetch('/conformOrder', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ orderId: orderId, product_id: productId ,}), 
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Fetch error:', error);
+  });
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+
+document.querySelectorAll('.update').forEach(button => {
+  button.addEventListener('click', function() {
+    // Get the selected value
+    let orderId = this.getAttribute('data-orderid');
+    
+    console.log(orderId);
+   
+    // You can now use the selectedValue in your script as needed.
+    // For example, you can use it to perform some action or make an AJAX request.
+    $.ajax({
+  method: 'POST',
+  url: '/admin/orderUpdate',
+  data: { orderId: orderId },
+  success: function(response) {
+    console.log("AJAX POST request to /test-post was successful!");
+    console.log("Response:", response);
+    
+    const progressBar = document.querySelector(`.progress-bar[data-orderid="${orderId}"]`);
+    const btnUpdate = document.getElementById('btnUpdate')
+    
+    // console.log(btnUpdate.innerHTML);
+    
+    let processingPercentage = 0; // Initialize progress
+    let backgroundColor = ''; // Initialize background color
+    
+    if (response.status === "processing") {
+      processingPercentage = 50; // Processing status, set progress to 50%
+      backgroundColor = 'blue'; // Change color to blue
+      btnUpdate.innerHTML=response.status
+      alert("processing")
+
+    } else if (response.status === "delivered") {
+      processingPercentage = 100; // Delivered status, set progress to 100%
+      backgroundColor = 'green'; // Change color to green
+      btnUpdate.innerHTML=response.status
+      alert("delivered")
+
+    }
+
+    // Update progress bar
+    progressBar.style.width = processingPercentage + "%";
+    progressBar.setAttribute('aria-valuenow', processingPercentage);
+    progressBar.style.backgroundColor = backgroundColor;
+  },
+      error: function(error) {
+        console.error("AJAX POST request to /test-post failed:", error);
+      }
+    });
+  });
+});
+document.querySelectorAll('.cancel').forEach(button => {
+  button.addEventListener('click', function() {
+    // Get the selected order ID
+    let orderId = this.getAttribute('data-orderid');
+    
+    console.log("Cancel button clicked for order ID:", orderId);
+
+    // Here you can perform the cancel action, like making an AJAX request.
+    // For example:
+    $.ajax({
+      method: 'POST',
+      url: '/admin/cancelOrder',
+      data: { orderId: orderId },
+      success: function(response) {
+        console.log("Order canceled successfully!", response);
+
+        // Update UI or take further actions for all progress bars
+        document.querySelectorAll(`.progress-bar[data-orderid="${orderId}"]`).forEach(progressBar => {
+          let processingPercentage = 0; // Initialize progress
+          let backgroundColor = ''; // Initialize background color
+
+          if (response.status === "cancel") {
+            processingPercentage = 100; // Processing status, set progress to 100%
+            backgroundColor = 'red'; // Change color to red
+          }
+          
+
+          progressBar.style.width = processingPercentage + "%";
+            progressBar.setAttribute('aria-valuenow', processingPercentage);
+            progressBar.style.backgroundColor = backgroundColor;
+          alert(response.message)
+            // Disable the cancel button when status is "delivered"
+            if (response.status === "delivered") {
+              const cancelButtons = document.querySelectorAll(`.cancel[data-orderid="${orderId}"]`);
+              cancelButtons.forEach(cancelButton => {
+                cancelButton.disabled = true;
+              });
+            }
+          });
+      },
+      error: function(error) {
+        console.error("Failed to cancel order:", error);
+      }
+    });
+  });
+});
+});
+
+</script>
+
+
+</body>
+</html>

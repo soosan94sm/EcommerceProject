@@ -1,0 +1,87 @@
+<%- include('../header.ejs') -%>
+<%- include('./partials/banner.ejs') -%>
+
+<!-- breadcrumb -->
+<div class="container" style="margin-top: 3rem;">
+  <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+    <a href="/" class="stext-109 cl8 hov-cl1 trans-04">
+      Home
+      <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+    </a>
+  </div>
+</div>
+
+<!-- Product Detail -->
+<section class="sec-product-detail bg0 p-t-65 p-b-60">
+  <% product.forEach((productItem) => { %>
+    <div class="container mt-5 pt-5">
+      <div class="row">
+        <div class="col-md-6 col-lg-7 p-b-30">
+          <div class="p-l-25 p-r-30 p-lr-0-lg">
+            <div class="wrap-slick3 flex-sb flex-w">
+              <% if (productItem.product.images && productItem.product.images.length > 0) { %>
+                <div class="slick3 gallery-lb">
+                  <div class="item-slick3">
+                    <div class="wrap-pic-w pos-relative">
+                      <img src="/admin/assets/uploads/<%= productItem.product.images[0] %>" width="280" alt="IMG-PRODUCT">
+                      <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="">
+                        <i class="fa fa-expand"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              <% } else { %>
+                <div class="slick3 gallery-lb">
+                  <div class="item-slick3">
+                    <div class="wrap-pic-w pos-relative">
+                      <img src="/path/to/placeholder-image.jpg" alt="No Image Available">
+                    </div>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-5 p-b-30">
+          <div class="p-r-50 p-t-5 p-lr-0-lg">
+            <h4 class="mtext-105 cl2 js-name-detail p-b-14">  
+              <%= productItem.product.productName %>
+            </h4>
+            <span class="mtext-106 cl2">
+              Rs. <%= productItem.product.price || 'Price not available' %>
+            </span>
+            <p class="stext-102 cl3 p-t-23">
+             
+            </p> 
+              <a href="/cancel" class="btn btn-danger btn-sm">Cancel this delivery</a>
+            
+          
+          </div>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+
+ 
+</section>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  // Add JavaScript code here to handle filter application and order history display
+  // document.getElementById('applyFilters').addEventListener('click', function() {
+  //     const statusFilter = document.getElementById('statusFilter').value;
+  //     const dateFilter = document.getElementById('dateFilter').value;
+     
+      
+      
+  // });
+  const returnCancel = document.getElementById('return')
+  returnCancel.addEventListener('click',()=>{
+      console.log("clickrd");
+  })
+
+  });
+ 
+
+</script>
+<%- include('../footer.ejs') -%>
